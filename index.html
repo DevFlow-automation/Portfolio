@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>devflow // Python & Автоматизация</title>
+    <!-- Подключаем Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Подключаем шрифт Ubuntu -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            background-color: #fafafa;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+
+        .tech-card {
+            transition: all 0.3s ease-out;
+            background: #ffffff;
+        }
+        
+        .tech-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.1), 0 0 0 1px rgba(15, 23, 42, 0.05);
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        .animate-marquee {
+            animation: marquee 30s linear infinite; /* Чуть замедлил для читаемости с иконками */
+        }
+
+        .fade-edges {
+            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="text-slate-900 overflow-x-hidden selection:bg-slate-200 selection:text-slate-900 relative">
+
+    <!-- Навигация -->
+    <nav class="fixed top-0 w-full flex justify-between items-center py-4 px-6 md:px-10 uppercase tracking-widest text-xs font-bold z-50 bg-[#fafafa]/80 backdrop-blur-md border-b border-slate-200/50">
+        <div class="hover:tracking-[0.2em] transition-all duration-300 cursor-pointer text-lg lowercase font-bold text-slate-900">devflow.</div>
+        <div class="space-x-5 flex items-center">
+            <a href="https://t.me/devflow" target="_blank" class="text-slate-400 hover:text-slate-900 transition-colors" aria-label="Telegram">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 2L11 13"></path><path d="M22 2l-7 20-4-9-9-4 20-7z"></path></svg>
+            </a>
+            <a href="https://instagram.com/devflow" target="_blank" class="text-slate-400 hover:text-slate-900 transition-colors" aria-label="Instagram">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            </a>
+            <span class="text-slate-300 hidden md:inline ml-2">|</span>
+            <a href="#services" class="text-slate-500 hover:text-slate-900 transition-colors hidden md:inline ml-5">Услуги</a>
+        </div>
+    </nav>
+
+    <!-- Главный экран -->
+    <main id="hero" class="relative flex flex-col items-center justify-center min-h-screen px-6 pt-20 overflow-hidden bg-[#fafafa]">
+        <canvas id="bg-canvas" class="absolute top-0 left-0 w-full h-full z-0 pointer-events-none"></canvas>
+        
+        <div class="relative z-10 flex flex-col items-center w-full">
+            <div class="animate-fade-in text-slate-500 text-xs mb-6 tracking-[0.1em] uppercase border border-slate-200 bg-white px-4 py-2 rounded-full shadow-sm font-medium">
+                Python-разработчик
+            </div>
+            
+            <h1 class="animate-fade-in delay-100 text-5xl md:text-[6rem] lg:text-[7rem] leading-[1.1] font-bold tracking-tight text-center text-slate-900">
+                СОЗДАЮ<br>ИНСТРУМЕНТЫ
+            </h1>
+            
+            <p class="animate-fade-in delay-200 mt-8 text-slate-600 max-w-xl text-center text-base md:text-lg leading-relaxed">
+                Которые освобождают ваше время. Специализируюсь на автоматизации процессов, разработке ботов и сборе данных.
+            </p>
+
+            <a href="#services" class="animate-fade-in delay-300 mt-16 flex items-center justify-center w-12 h-12 rounded-full border border-slate-200 text-slate-400 hover:text-slate-900 hover:border-slate-400 transition-colors bg-white">
+                <svg class="w-5 h-5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+            </a>
+        </div>
+    </main>
+
+    <!-- Бегущая строка (Marquee) с иконками -->
+    <div class="py-6 border-b border-slate-200 overflow-hidden fade-edges flex select-none bg-white">
+        <!-- Блок 1 -->
+        <div class="animate-marquee whitespace-nowrap flex items-center space-x-10 pr-10 font-mono text-sm tracking-wide text-slate-400 font-medium">
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M14.228 1.455c-4.444-.664-8.875.894-8.875 5.541v2.441h5.361v.864H3.047C1.492 10.301.216 11.517.067 14.135c-.171 2.97.747 5.86 3.655 5.86h2.241v-2.316c0-2.394 1.942-4.321 4.316-4.321h5.869c.895 0 1.62-.716 1.62-1.602V4.542c0-1.638-1.503-2.73-3.54-3.087zM8.344 3.73a1.11 1.11 0 1 1 0 2.22 1.11 1.11 0 0 1 0-2.22zm1.611 15.65v2.441c0 2.453 1.83 4.227 4.223 4.227h5.344c2.898 0 4.148-1.928 4.298-5.385.115-2.616-.948-4.331-3.238-4.331h-2.18v2.32c0 2.39-1.941 4.316-4.316 4.316H8.221c-.894 0-1.618.718-1.618 1.604v4.54c0 1.637 1.503 2.729 3.54 3.087 4.444.664 8.875-.894 8.875-5.542v-2.44h-5.36v-.863h7.666c1.554 0 2.83-1.216 2.979-3.834.172-2.97-.746-5.86-3.654-5.86h-2.242v2.317c0 2.393-1.94 4.32-4.315 4.32H8.345c-.895 0-1.62.716-1.62 1.602v7.214zM15.656 20.27a1.11 1.11 0 1 1 0-2.22 1.11 1.11 0 0 1 0 2.22z"/></svg>
+                <span>Python</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                <span>FastAPI</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><path d="M3 9h18M9 21V9" /></svg>
+                <span>Playwright</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" /></svg>
+                <span>Selenium</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+                <span>Aiogram</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                <span>Scrapy</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M14.228 2.052L12 5.92 9.772 2.052h-2.91L12 11.026l5.138-8.974zM12 18.077L4.632 5.334H.5l11.5 19.914 11.5-19.914h-4.132z"/></svg>
+                <span>Vue.js</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001,4.8c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 C13.666,10.618,15.027,12,18.001,12c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C16.337,6.182,14.976,4.8,12.001,4.8z M6.001,12c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 c1.177,1.194,2.538,2.576,5.512,2.576c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C10.337,13.382,8.976,12,6.001,12z"/></svg>
+                <span>Tailwind</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" /></svg>
+                <span>PostgreSQL</span>
+            </div>
+        </div>
+        <!-- Блок 2 (Дубликат) -->
+        <div class="animate-marquee whitespace-nowrap flex items-center space-x-10 pr-10 font-mono text-sm tracking-wide text-slate-400 font-medium" aria-hidden="true">
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M14.228 1.455c-4.444-.664-8.875.894-8.875 5.541v2.441h5.361v.864H3.047C1.492 10.301.216 11.517.067 14.135c-.171 2.97.747 5.86 3.655 5.86h2.241v-2.316c0-2.394 1.942-4.321 4.316-4.321h5.869c.895 0 1.62-.716 1.62-1.602V4.542c0-1.638-1.503-2.73-3.54-3.087zM8.344 3.73a1.11 1.11 0 1 1 0 2.22 1.11 1.11 0 0 1 0-2.22zm1.611 15.65v2.441c0 2.453 1.83 4.227 4.223 4.227h5.344c2.898 0 4.148-1.928 4.298-5.385.115-2.616-.948-4.331-3.238-4.331h-2.18v2.32c0 2.39-1.941 4.316-4.316 4.316H8.221c-.894 0-1.618.718-1.618 1.604v4.54c0 1.637 1.503 2.729 3.54 3.087 4.444.664 8.875-.894 8.875-5.542v-2.44h-5.36v-.863h7.666c1.554 0 2.83-1.216 2.979-3.834.172-2.97-.746-5.86-3.654-5.86h-2.242v2.317c0 2.393-1.94 4.32-4.315 4.32H8.345c-.895 0-1.62.716-1.62 1.602v7.214zM15.656 20.27a1.11 1.11 0 1 1 0-2.22 1.11 1.11 0 0 1 0 2.22z"/></svg>
+                <span>Python</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                <span>FastAPI</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><path d="M3 9h18M9 21V9" /></svg>
+                <span>Playwright</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" /></svg>
+                <span>Selenium</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+                <span>Aiogram</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                <span>Scrapy</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M14.228 2.052L12 5.92 9.772 2.052h-2.91L12 11.026l5.138-8.974zM12 18.077L4.632 5.334H.5l11.5 19.914 11.5-19.914h-4.132z"/></svg>
+                <span>Vue.js</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001,4.8c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 C13.666,10.618,15.027,12,18.001,12c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C16.337,6.182,14.976,4.8,12.001,4.8z M6.001,12c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 c1.177,1.194,2.538,2.576,5.512,2.576c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C10.337,13.382,8.976,12,6.001,12z"/></svg>
+                <span>Tailwind</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" /></svg>
+                <span>PostgreSQL</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Секция Услуг -->
+    <section id="services" class="max-w-6xl mx-auto py-24 px-6 md:px-10 relative z-10">
+        <div class="flex items-center justify-between mb-16 border-b border-slate-200 pb-6">
+            <h2 class="text-xs uppercase tracking-[0.1em] text-slate-500 font-bold">Чем я могу помочь</h2>
+            <span class="text-xs text-slate-400 font-medium">devflow // services</span>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Услуга 1 -->
+            <div class="tech-card group p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="w-10 h-10 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center mb-6 text-slate-700 text-sm font-bold">01</div>
+                <h3 class="text-2xl font-bold mb-3 text-slate-900">Telegram-боты</h3>
+                <p class="text-slate-500 text-sm mb-6 leading-relaxed">От простых визиток до сложных систем с базами данных и сторонними интеграциями.</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600 border border-slate-200/50">FastAPI</span>
+                    <span class="px-3 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600 border border-slate-200/50">aiogram</span>
+                </div>
+            </div>
+
+            <!-- Услуга 2 -->
+            <div class="tech-card group p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="w-10 h-10 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center mb-6 text-slate-700 text-sm font-bold">02</div>
+                <h3 class="text-2xl font-bold mb-3 text-slate-900">Мониторинг сайтов</h3>
+                <p class="text-slate-500 text-sm mb-6 leading-relaxed">Скрипты для отслеживания цен, товаров и объявлений 24/7 с мгновенными уведомлениями в Telegram.</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600 border border-slate-200/50">Python</span>
+                    <span class="px-3 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600 border border-slate-200/50">Cron</span>
+                </div>
+            </div>
+
+            <!-- Услуга 3 -->
+            <div class="tech-card group p-8 rounded-2xl border border-slate-200 shadow-sm md:col-span-2">
+                <div class="w-10 h-10 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center mb-6 text-slate-700 text-sm font-bold">03</div>
+                <h3 class="text-2xl font-bold mb-3 text-slate-900">Автоматизация ПК и Браузера</h3>
+                <p class="text-slate-500 text-sm mb-6 max-w-3xl leading-relaxed">Имитация действий пользователя, автозаполнение сложных форм, работа в закрытых личных кабинетах и полная автоматизация рутинных задач в среде Windows.</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600 border border-slate-200/50">Playwright</span>
+                    <span class="px-3 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600 border border-slate-200/50">Selenium</span>
+                    <span class="px-3 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600 border border-slate-200/50">PyAutoGUI</span>
+                </div>
+            </div>
+
+            <!-- Услуга 4 -->
+            <div class="tech-card group p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="w-10 h-10 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center mb-6 text-slate-700 text-sm font-bold">04</div>
+                <h3 class="text-2xl font-bold mb-3 text-slate-900">Профессиональный парсинг</h3>
+                <p class="text-slate-500 text-sm mb-6 leading-relaxed">Сбор и структурирование данных любой сложности из интернет-магазинов, каталогов и соцсетей в форматы Excel/CSV/JSON.</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600 border border-slate-200/50">Scrapy / BS4</span>
+                    <span class="px-3 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600 border border-slate-200/50">Data Mining</span>
+                </div>
+            </div>
+
+            <!-- Услуга 5 -->
+            <div class="tech-card group p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="w-10 h-10 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center mb-6 text-slate-700 text-sm font-bold">05</div>
+                <h3 class="text-2xl font-bold mb-3 text-slate-900">Интеграции</h3>
+                <p class="text-slate-500 text-sm mb-6 leading-relaxed">Связываю разрозненные системы. Настройка обмена данными между вашим сайтом, Telegram, CRM и другими сервисами по API.</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600 border border-slate-200/50">REST API</span>
+                    <span class="px-3 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600 border border-slate-200/50">Webhooks</span>
+                </div>
+            </div>
+
+            <!-- Услуга 6 -->
+            <div class="tech-card group p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="w-10 h-10 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center mb-6 text-slate-700 text-sm font-bold">06</div>
+                <h3 class="text-2xl font-bold mb-3 text-slate-900">Разработка сайтов</h3>
+                <p class="text-slate-500 text-sm mb-6 leading-relaxed">Создание быстрых, современных и адаптивных лендингов, а также сложных веб-интерфейсов с фокусом на производительность.</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600 border border-slate-200/50">Tailwind CSS</span>
+                    <span class="px-3 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600 border border-slate-200/50">Vue / React</span>
+                </div>
+            </div>
+
+            <!-- Услуга 7 -->
+            <div class="tech-card group p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="w-10 h-10 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center mb-6 text-slate-700 text-sm font-bold">07</div>
+                <h3 class="text-2xl font-bold mb-3 text-slate-900">AI Telegram-боты</h3>
+                <p class="text-slate-500 text-sm mb-6 leading-relaxed">Интеграция нейросетей (ChatGPT, Claude) в Telegram-ботов для умной поддержки, генерации контента и анализа данных.</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600 border border-slate-200/50">OpenAI API</span>
+                    <span class="px-3 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600 border border-slate-200/50">LLM / AI</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция Этапы Работы -->
+    <section class="max-w-6xl mx-auto py-10 px-6 md:px-10 relative z-10">
+        <div class="flex items-center justify-between mb-16 border-b border-slate-200 pb-6">
+            <h2 class="text-xs uppercase tracking-[0.1em] text-slate-500 font-bold">Как мы работаем</h2>
+            <span class="text-xs text-slate-400 font-medium">devflow // process</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-4 relative">
+            <div class="hidden md:block absolute top-6 left-6 right-6 h-px bg-slate-200 z-0"></div>
+            
+            <div class="relative z-10">
+                <div class="w-12 h-12 rounded-full bg-white border-2 border-slate-200 flex items-center justify-center text-slate-900 font-bold mb-6 mx-auto md:mx-0 shadow-sm">1</div>
+                <div class="text-center md:text-left">
+                    <h3 class="text-lg font-bold mb-2 text-slate-900">Анализ задачи</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Погружаюсь в бизнес-процесс, собираю требования и предлагаю оптимальное техническое решение.</p>
+                </div>
+            </div>
+
+            <div class="relative z-10">
+                <div class="w-12 h-12 rounded-full bg-white border-2 border-slate-200 flex items-center justify-center text-slate-900 font-bold mb-6 mx-auto md:mx-0 shadow-sm">2</div>
+                <div class="text-center md:text-left">
+                    <h3 class="text-lg font-bold mb-2 text-slate-900">Разработка</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Пишу чистый и надежный код, настраиваю архитектуру и регулярно держу в курсе процесса.</p>
+                </div>
+            </div>
+
+            <div class="relative z-10">
+                <div class="w-12 h-12 rounded-full bg-white border-2 border-slate-200 flex items-center justify-center text-slate-900 font-bold mb-6 mx-auto md:mx-0 shadow-sm">3</div>
+                <div class="text-center md:text-left">
+                    <h3 class="text-lg font-bold mb-2 text-slate-900">Тестирование</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Тщательно проверяю работу скриптов и ботов в реальных условиях, обрабатываю крайние случаи.</p>
+                </div>
+            </div>
+
+            <div class="relative z-10">
+                <div class="w-12 h-12 rounded-full bg-[#fafafa] border-2 border-slate-900 flex items-center justify-center text-slate-900 font-bold mb-6 mx-auto md:mx-0 shadow-sm">4</div>
+                <div class="text-center md:text-left">
+                    <h3 class="text-lg font-bold mb-2 text-slate-900">Запуск</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Передаю готовый продукт, помогаю с деплоем на сервер и обеспечиваю техническую поддержку.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция CTA (Призыв к действию) -->
+    <section class="max-w-5xl mx-auto py-24 px-6 md:px-10 relative z-10">
+        <div class="bg-slate-900 rounded-[2rem] p-10 md:p-16 text-center text-white shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-slate-800 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3"></div>
+            <div class="absolute bottom-0 left-0 w-48 h-48 bg-slate-800 rounded-full blur-3xl opacity-50 translate-y-1/3 -translate-x-1/4"></div>
+            
+            <div class="relative z-10">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6 tracking-tight">Готовы автоматизировать рутину?</h2>
+                <p class="text-slate-400 mb-10 max-w-xl mx-auto text-base md:text-lg">
+                    Расскажите о своей задаче. Я проведу бесплатную оценку проекта, подскажу подводные камни и предложу варианты реализации.
+                </p>
+                
+                <a href="https://t.me/devflow" target="_blank" class="inline-flex items-center justify-center px-8 py-4 bg-white text-slate-900 font-bold rounded-xl hover:bg-slate-100 hover:scale-105 hover:shadow-lg transition-all duration-300 transform group">
+                    Написать в Telegram
+                    <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="py-10 text-center text-slate-500 text-sm border-t border-slate-200">
+        <p>© 2026 devflow. Автоматизация, которая работает.</p>
+    </footer>
+
+    <!-- Скрипт для интерактивного фона -->
+    <script>
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        const hero = document.getElementById('hero');
+        
+        let width, height;
+        let dots = [];
+        const spacing = 35;
+        let mouse = { x: -1000, y: -1000 };
+
+        function init() {
+            width = canvas.width = hero.offsetWidth;
+            height = canvas.height = hero.offsetHeight;
+            dots = [];
+            for (let x = 0; x < width; x += spacing) {
+                for (let y = 0; y < height; y += spacing) {
+                    dots.push({ x: x, y: y, originX: x, originY: y });
+                }
+            }
+        }
+
+        window.addEventListener('resize', init);
+        
+        hero.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouse.x = e.clientX - rect.left;
+            mouse.y = e.clientY - rect.top;
+        });
+        
+        hero.addEventListener('mouseleave', () => {
+            mouse.x = -1000;
+            mouse.y = -1000;
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            dots.forEach(dot => {
+                let dx = mouse.x - dot.originX;
+                let dy = mouse.y - dot.originY;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                
+                let radius = 1.5; 
+                let opacity = 0.3; 
+                
+                if (distance < 150) {
+                    let force = (150 - distance) / 150; 
+                    radius = 1.5 + force * 2.5; 
+                    opacity = 0.3 + force * 0.7; 
+                    
+                    dot.x = dot.originX + (dx * force * 0.1);
+                    dot.y = dot.originY + (dy * force * 0.1);
+                } else {
+                    dot.x += (dot.originX - dot.x) * 0.1;
+                    dot.y += (dot.originY - dot.y) * 0.1;
+                }
+
+                ctx.fillStyle = `rgba(71, 85, 105, ${opacity})`;
+                ctx.beginPath();
+                ctx.arc(dot.x, dot.y, radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+    </script>
+</body>
+</html>
